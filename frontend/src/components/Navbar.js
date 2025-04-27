@@ -91,7 +91,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="navbar-logo">
             <RestaurantIcon />
-            <span>CookSphere</span>
+            <span>CookGram</span>
           </Link>
 
           {/* Search Bar */}
