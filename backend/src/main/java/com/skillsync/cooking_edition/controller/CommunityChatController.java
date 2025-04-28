@@ -1,5 +1,6 @@
 package com.skillsync.cooking_edition.controller;
 
+
 import com.skillsync.cooking_edition.model.CommunityChatMessage;
 import com.skillsync.cooking_edition.repository.CommunityChatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,5 +82,5 @@ public class CommunityChatController {
         chatRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
-    
+
 } 
