@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
 @Document(collection = "community_chat_messages")
 public class CommunityChatMessage {
     @Id
@@ -33,4 +32,5 @@ public class CommunityChatMessage {
 
     public String getUserPicture() { return userPicture; }
     public void setUserPicture(String userPicture) { this.userPicture = userPicture; }
+    
 } 

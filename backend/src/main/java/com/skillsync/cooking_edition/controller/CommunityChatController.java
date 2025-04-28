@@ -28,6 +28,7 @@ public class CommunityChatController {
         return ResponseEntity.ok(messages);
     }
 
+
     @PostMapping
     public ResponseEntity<?> postMessage(@RequestParam String message) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -50,6 +51,7 @@ public class CommunityChatController {
         return ResponseEntity.status(401).body("Unauthorized");
     }
 
+    
     @PutMapping("/{id}")
     public ResponseEntity<?> editMessage(@PathVariable String id, @RequestBody Map<String, String> body) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
