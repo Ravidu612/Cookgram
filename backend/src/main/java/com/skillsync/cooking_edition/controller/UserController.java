@@ -1,6 +1,5 @@
 package com.skillsync.cooking_edition.controller;
 
-
 import com.skillsync.cooking_edition.dto.ProfileUpdateRequest;
 import com.skillsync.cooking_edition.dto.UserDTO;
 import com.skillsync.cooking_edition.model.User;
