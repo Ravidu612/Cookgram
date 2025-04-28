@@ -7,4 +7,5 @@ import com.skillsync.cooking_edition.model.CommunityChatMessage;
 
 public interface CommunityChatRepository extends MongoRepository<CommunityChatMessage, String> {
     List<CommunityChatMessage> findAllByOrderByCreatedAtAsc();
+    
 } 

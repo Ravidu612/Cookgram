@@ -1,6 +1,5 @@
 package com.skillsync.cooking_edition.model;
 
-
 import java.time.LocalDateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

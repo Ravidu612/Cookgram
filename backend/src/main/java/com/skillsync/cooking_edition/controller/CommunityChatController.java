@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+
 @RestController
 @RequestMapping("/api/community-chat")
 public class CommunityChatController {
@@ -80,4 +81,5 @@ public class CommunityChatController {
         chatRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
+    
 } 
