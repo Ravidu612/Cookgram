@@ -1,5 +1,6 @@
 package com.skillsync.cooking_edition.model;
 
+
 import java.time.LocalDateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -31,4 +32,5 @@ public class CommunityChatMessage {
 
     public String getUserPicture() { return userPicture; }
     public void setUserPicture(String userPicture) { this.userPicture = userPicture; }
+    
 } 
