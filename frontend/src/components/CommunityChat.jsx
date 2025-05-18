@@ -1,24 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Box, 
-  Paper, 
-  Typography, 
-  TextField, 
-  Button, 
-  Avatar, 
-  CircularProgress, 
+import {
+  Box,
+  Paper,
+  Typography,
+  TextField,
+  Avatar,
+  CircularProgress,
   IconButton,
   Menu,
   MenuItem,
-  Divider,
 } from '@mui/material';
-import { 
+import {
   MoreVert as MoreVertIcon,
   Send as SendIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
   Save as SaveIcon,
-  Close as CloseIcon 
+  Close as CloseIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
@@ -123,37 +121,31 @@ const CommunityChat = () => {
     const isCurrentUser = user && msg.userId === user.id;
 
     return (
-      <Box 
-        key={msg.id} 
-        sx={{ 
-          display: 'flex', 
-          alignItems: 'flex-start', 
-          mb: 3,
+      <Box
+        key={msg.id}
+        sx={{
+          display: 'flex',
+          alignItems: 'flex-end',
+          mb: 2.5,
           flexDirection: isCurrentUser ? 'row-reverse' : 'row',
-          '&:hover .message-actions': {
-            opacity: 1,
-          },
+          gap: 1.5,
         }}
       >
-        <Avatar 
-          src={msg.userPicture} 
-          sx={{ 
-            width: 32,
-            height: 32,
-            mr: isCurrentUser ? 0 : 1.5,
-            ml: isCurrentUser ? 1.5 : 0,
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            border: '2px solid #fff',
+        <Avatar
+          src={msg.userPicture}
+          sx={{
+            width: 36,
+            height: 36,
+            bgcolor: isCurrentUser ? '#a7027d' : '#e3e6f3',
+            color: isCurrentUser ? '#fff' : '#a7027d',
+            fontWeight: 700,
+            fontSize: '1.1rem',
+            boxShadow: '0 2px 8px rgba(167,2,125,0.08)',
           }}
         >
           {!msg.userPicture && (msg.userName ? msg.userName[0] : '?')}
         </Avatar>
-        <Box 
-          sx={{ 
-            maxWidth: '70%',
-            minWidth: '100px',
-          }}
-        >
+        <Box sx={{ maxWidth: '75%', minWidth: '100px' }}>
           <Box
             sx={{
               display: 'flex',
@@ -163,27 +155,28 @@ const CommunityChat = () => {
               mb: 0.5,
             }}
           >
-            <Typography 
-              variant="subtitle2" 
-              sx={{ 
-                fontSize: '0.85rem',
-                color: isCurrentUser ? '#1976d2' : 'text.primary', // blue for current user
-                fontWeight: 600,
+            <Typography
+              variant="subtitle2"
+              sx={{
+                fontSize: '0.92rem',
+                color: '#111',
+                fontWeight: 700,
+                letterSpacing: 0.2,
               }}
             >
               {msg.userName || 'Unknown'}
             </Typography>
-            <Typography 
-              variant="caption" 
-              sx={{ 
-                color: 'text.secondary',
-                fontSize: '0.75rem',
+            <Typography
+              variant="caption"
+              sx={{
+                color: '#111',
+                fontSize: '0.78rem',
+                opacity: 0.6,
               }}
             >
               {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
             </Typography>
           </Box>
-          
           {editingId === msg.id ? (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
               <TextField
@@ -198,7 +191,14 @@ const CommunityChat = () => {
                   '& .MuiOutlinedInput-root': {
                     borderRadius: 2,
                     backgroundColor: 'background.paper',
-                  }
+                    color: '#111',
+                  },
+                  '& input': {
+                    color: '#111',
+                  },
+                }}
+                InputProps={{
+                  style: { color: '#111' },
                 }}
               />
               <IconButton onClick={() => handleEditSave(msg.id)} color="primary" size="small">
@@ -211,38 +211,52 @@ const CommunityChat = () => {
           ) : (
             <Box
               sx={{
+                bgcolor: isCurrentUser
+                  ? 'linear-gradient(135deg, #f857a6 0%, #a7027d 100%)'
+                  : 'rgba(245,245,255,0.8)',
+                color: '#111',
+                borderRadius: isCurrentUser
+                  ? '18px 18px 4px 18px'
+                  : '18px 18px 18px 4px',
+                boxShadow: isCurrentUser
+                  ? '0 2px 8px rgba(167,2,125,0.10)'
+                  : '0 2px 8px rgba(31,38,135,0.06)',
+                px: 2.5,
+                py: 1.5,
+                mb: 0.5,
+                mt: 0.5,
+                wordBreak: 'break-word',
+                fontSize: '1.05rem',
                 position: 'relative',
+                transition: 'background 0.2s',
                 display: 'inline-block',
                 maxWidth: '100%',
               }}
             >
-              <Typography 
-              variant="body1" 
-              sx={{
-                color: isCurrentUser ? '#111' : 'text.primary', // black for current user
-                fontSize: '0.95rem',
-                lineHeight: 1.5,
-                wordBreak: 'break-word',
-              }}
-            >
-              {msg.message}
+              <Typography
+                variant="body1"
+                sx={{
+                  color: '#111',
+                  fontSize: '1rem',
+                  lineHeight: 1.6,
+                }}
+              >
+                {msg.message}
               </Typography>
             </Box>
           )}
         </Box>
         {user && msg.userId === user.id && editingId !== msg.id && (
-          <IconButton 
+          <IconButton
             size="small"
-            onClick={(e) => handleMenuOpen(e, msg)}
+            onClick={e => handleMenuOpen(e, msg)}
             className="message-actions"
-            sx={{ 
-              ml: 1,
-              opacity: 0,
-              transition: 'opacity 0.2s ease',
-              color: 'text.secondary',
+            sx={{
+              opacity: 0.7,
+              color: '#a7027d',
               padding: 0.5,
               '&:hover': {
-                color: 'primary.main',
+                color: '#f857a6',
                 backgroundColor: 'transparent',
               },
             }}
@@ -255,194 +269,260 @@ const CommunityChat = () => {
   };
 
   return (
-    <Paper 
-      elevation={3} 
-      sx={{ 
-        p: 3, 
-        borderRadius: 3, 
-        maxWidth: 800, 
-        mx: 'auto', 
-        mt: 4,
-        height: 'calc(100vh - 200px)',
+    <Box
+      sx={{
+        minHeight: '100vh',
+        bgcolor: 'linear-gradient(135deg, #f8fafc 0%, #e3e6f3 100%)',
+        py: 6,
+        px: 2,
         display: 'flex',
-        flexDirection: 'column',
-        bgcolor: '#ffffff',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-        border: '2.5px solidrgb(167, 2, 125)', // blue border for distinction
-        outline: '4px solid #e3eeff', // subtle tile effect
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
-      <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, color: 'primary.main' }}>
-        
-      </Typography>
-      <Typography 
-        variant="body2" 
-        color="text.secondary" 
-        gutterBottom 
-        sx={{ 
-          fontWeight: 500,
-          opacity: 0.8,
+      <Paper
+        elevation={0}
+        sx={{
+          width: '100%',
+          maxWidth: 600,
+          minHeight: 600,
+          borderRadius: 5,
+          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+          backdropFilter: 'blur(8px)',
+          background: 'rgba(255,255,255,0.85)',
+          border: '1.5px solid rgba(167, 2, 125, 0.12)',
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
-Please be kind and respectful to others in this chat. Let’s keep it friendly!      </Typography>
-      <Divider sx={{ my: 2 }} />
-      
-      <Box 
-        sx={{ 
-          flex: 1,
-          overflowY: 'auto',
-          mb: 2,
-          px: 2,
-          py: 1,
-          '&::-webkit-scrollbar': {
-            width: '6px',
-          },
-          '&::-webkit-scrollbar-track': {
-            background: 'transparent',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            background: 'rgba(0,0,0,0.1)',
-            borderRadius: '10px',
-            '&:hover': {
-              background: 'rgba(0,0,0,0.2)',
-            },
-          },
-        }}
-      >
-        {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <CircularProgress size={24} sx={{ color: 'primary.light' }} />
-          </Box>
-        ) : messages.length === 0 ? (
-          <Typography 
-            color="text.secondary" 
-            align="center"
-            sx={{ 
-              fontStyle: 'italic',
-              opacity: 0.8,
-            }}
-          >
-            No messages yet. Be the first to start the conversation!
-          </Typography>
-        ) : (
-          messages.map(renderMessage)
-        )}
-        <div ref={messagesEndRef} />
-      </Box>
-
-      {user ? (
+        {/* Header */}
         <Box
-          component="form"
-          onSubmit={handleSend}
           sx={{
-            display: 'flex',
-            gap: 1,
-            pt: 2,
-            borderTop: '1px solid',
-            borderColor: 'divider',
+            px: 4,
+            pt: 3,
+            pb: 2,
+            borderBottom: '1.5px solid #f0f0f0',
+            background: 'rgba(255,255,255,0.7)',
+            zIndex: 2,
           }}
         >
-          <TextField
-            value={message}
-            onChange={e => setMessage(e.target.value)}
-            placeholder="Type your message..."
-            size="small"
-            fullWidth
-            disabled={sending}
-            multiline
-            maxRows={4}
+          <Typography variant="h5" sx={{ fontWeight: 700, color: '#111', letterSpacing: 1 }}>
+            Community Chat
+          </Typography>
+          <Typography
+            variant="body2"
             sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 3,
-                backgroundColor: 'rgba(0,0,0,0.02)',
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                  backgroundColor: 'rgba(0,0,0,0.03)',
-                },
-                '&.Mui-focused': {
-                  backgroundColor: '#fff',
-                  boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.1)',
-                },
-              },
+              fontWeight: 500,
+              opacity: 0.85,
+              mt: 0.5,
+              fontSize: '1rem',
+              letterSpacing: 0.1,
+              color: '#111',
             }}
-          />
-          <IconButton 
-            type="submit" 
-            disabled={sending || !message.trim()}
-            sx={{
+          >
+            Please be kind and respectful to others in this chat. Let’s keep it friendly!
+          </Typography>
+        </Box>
+
+        {/* Messages */}
+        <Box
+          sx={{
+            flex: 1,
+            overflowY: 'auto',
+            px: 4,
+            py: 3,
+            background: 'transparent',
+            position: 'relative',
+            '&::-webkit-scrollbar': {
+              width: '8px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: 'rgba(167,2,125,0.08)',
+              borderRadius: '8px',
+            },
+          }}
+        >
+          {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+              <CircularProgress size={28} sx={{ color: '#a7027d' }} />
+            </Box>
+          ) : messages.length === 0 ? (
+            <Typography
+              sx={{
+                color: '#111',
+                fontStyle: 'italic',
+                opacity: 0.8,
+                mt: 6,
+                fontSize: '1.1rem',
+              }}
+              align="center"
+            >
+              No messages yet. Be the first to start the conversation!
+            </Typography>
+          ) : (
+            messages.map(renderMessage)
+          )}
+          <div ref={messagesEndRef} />
+        </Box>
+
+        {/* Input Bar */}
+        <Box
+          sx={{
+            px: 4,
+            pb: 3,
+            pt: 2,
+            background: 'rgba(255,255,255,0.85)',
+            borderTop: '1.5px solid #f0f0f0',
+            position: 'sticky',
+            bottom: 0,
+            zIndex: 2,
+          }}
+        >
+          {user ? (
+            <Box
+              component="form"
+              onSubmit={handleSend}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                background: 'rgba(245,245,255,0.7)',
+                borderRadius: 3,
+                boxShadow: '0 2px 8px rgba(167,2,125,0.04)',
+                px: 2,
+                py: 1,
+              }}
+            >
+              <Avatar
+                src={user?.photoURL}
+                sx={{
+                  width: 36,
+                  height: 36,
+                  mr: 1,
+                  bgcolor: '#a7027d',
+                  color: '#fff',
+                  fontWeight: 700,
+                  fontSize: '1.1rem',
+                }}
+              >
+                {user?.displayName?.[0]?.toUpperCase() || '?'}
+              </Avatar>
+              <TextField
+                value={message}
+                onChange={e => setMessage(e.target.value)}
+                placeholder="Type your message…"
+                size="small"
+                fullWidth
+                disabled={sending}
+                multiline
+                maxRows={4}
+                variant="outlined"
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    backgroundColor: 'rgba(255,255,255,0.95)',
+                    fontSize: '1rem',
+                    color: '#111',
+                  },
+                  '& input': {
+                    color: '#111',
+                  },
+                  '& textarea': {
+                    color: '#111',
+                  },
+                }}
+                InputProps={{
+                  style: { color: '#111' },
+                }}
+                InputLabelProps={{
+                  style: { color: '#111' },
+                }}
+              />
+              <IconButton
+                type="submit"
+                disabled={sending || !message.trim()}
+                sx={{
+                  borderRadius: 2,
+                  width: 44,
+                  height: 44,
+                  color: '#fff',
+                  background: 'linear-gradient(135deg, #a7027d 60%, #f857a6 100%)',
+                  boxShadow: '0 2px 8px rgba(167,2,125,0.10)',
+                  transition: 'all 0.2s',
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #f857a6 60%, #a7027d 100%)',
+                  },
+                  '&.Mui-disabled': {
+                    background: 'rgba(167,2,125,0.12)',
+                    color: '#fff',
+                  },
+                }}
+              >
+                <SendIcon />
+              </IconButton>
+            </Box>
+          ) : (
+            <Typography
+              sx={{
+                color: '#111',
+                fontStyle: 'italic',
+                opacity: 0.8,
+                fontSize: '1.05rem',
+              }}
+              align="center"
+            >
+              Login to participate in the chat.
+            </Typography>
+          )}
+        </Box>
+
+        {/* Message Actions Menu */}
+        <Menu
+          anchorEl={menuAnchorEl}
+          open={Boolean(menuAnchorEl)}
+          onClose={handleMenuClose}
+          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          PaperProps={{
+            elevation: 2,
+            sx: {
               borderRadius: 2,
-              width: 40,
-              height: 40,
-              color: 'primary.main',
-              transition: 'all 0.2s ease',
+              minWidth: 120,
+            },
+          }}
+        >
+          <MenuItem
+            onClick={handleEdit}
+            sx={{
+              py: 1,
+              color: '#111',
               '&:hover': {
-                backgroundColor: 'primary.main',
-                color: '#fff',
-              },
-              '&.Mui-disabled': {
-                backgroundColor: 'transparent',
-                color: 'action.disabled',
+                backgroundColor: 'action.hover',
               },
             }}
           >
-            <SendIcon />
-          </IconButton>
-        </Box>
-      ) : (
-        <Typography 
-          color="text.secondary" 
-          align="center"
-          sx={{ 
-            fontStyle: 'italic',
-            opacity: 0.8,
-          }}
-        >
-          Login to participate in the chat.
-        </Typography>
-      )}
-
-      <Menu
-        anchorEl={menuAnchorEl}
-        open={Boolean(menuAnchorEl)}
-        onClose={handleMenuClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        PaperProps={{
-          elevation: 2,
-          sx: {
-            borderRadius: 2,
-            minWidth: 120,
-          }
-        }}
-      >
-        <MenuItem 
-          onClick={handleEdit}
-          sx={{ 
-            py: 1,
-            '&:hover': {
-              backgroundColor: 'action.hover',
-            }
-          }}
-        >
-          <EditIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main' }} />
-          Edit
-        </MenuItem>
-        <MenuItem 
-          onClick={handleDelete} 
-          sx={{ 
-            color: 'error.main',
-            py: 1,
-            '&:hover': {
-              backgroundColor: 'error.lighter',
-            }
-          }}
-        >
-          <DeleteIcon fontSize="small" sx={{ mr: 1.5 }} />
-          Delete
-        </MenuItem>
-      </Menu>
-    </Paper>
+            <EditIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main' }} />
+            Edit
+          </MenuItem>
+          <MenuItem
+            onClick={handleDelete}
+            sx={{
+              color: 'error.main',
+              py: 1,
+              '&:hover': {
+                backgroundColor: 'error.lighter',
+              },
+            }}
+          >
+            <DeleteIcon fontSize="small" sx={{ mr: 1.5 }} />
+            Delete
+          </MenuItem>
+        </Menu>
+      </Paper>
+    </Box>
   );
 };
 
-export default CommunityChat; 
+export default CommunityChat;

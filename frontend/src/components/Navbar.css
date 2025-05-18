@@ -37,7 +37,7 @@
 
 .navbar-logo svg {
   font-size: 28px;
-  color: #E1306C;
+  color: #48453f;
 }
 
 .navbar-search {
@@ -104,7 +104,7 @@
 
 .nav-icon-btn:hover {
   transform: scale(1.1);
-  color: #E1306C;
+  color: #e4769b;
 }
 
 .nav-icon-btn.active {
@@ -218,7 +218,7 @@
 }
 
 .menu-item .badge.mobile {
-  background: #E1306C;
+  background: #ec8aab;
   color: white;
   border-radius: 10px;
 } 

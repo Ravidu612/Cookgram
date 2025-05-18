@@ -79,7 +79,7 @@ const Home = () => {
                 textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
               }}
             >
-              Welcome to CookSphere
+              Welcome to CookGram
             </Typography>
             <Typography 
               variant="h5" 
@@ -120,7 +120,7 @@ const Home = () => {
             color: theme.palette.primary.main,
           }}
         >
-          Why Choose CookSphere?
+          Why Choose CookGram?
         </Typography>
         <Grid container spacing={4}>
           {features.map((feature, index) => (

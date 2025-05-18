@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Container,
-  Paper,
   Typography,
   TextField,
   Button,
@@ -11,16 +10,11 @@ import {
   IconButton,
   List,
   ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
   Divider,
   Alert,
   CircularProgress,
   Card,
   CardContent,
-  Stepper,
-  Step,
-  StepLabel
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -28,8 +22,11 @@ import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
+const COLOR_BEIGE = '#cfac78';
+const COLOR_GREEN = '#49940c';
+const COLOR_PURPLE = '#8a2f7c';
+
 const MAX_IMAGES = 3;
-const MAX_VIDEO_DURATION_SECONDS = 30;
 
 const PostCreate = () => {
   const navigate = useNavigate();
@@ -65,21 +62,17 @@ const PostCreate = () => {
     const files = Array.from(event.target.files);
     setMediaError('');
 
-    // Check total number of files
     if (mediaFiles.length + files.length > 3) {
       setMediaError('Maximum 3 media files allowed (photos and videos combined)');
       return;
     }
 
-    // Validate each file
     for (const file of files) {
       if (file.type.startsWith('image/')) {
-        // Handle image file
         setMediaFiles(prev => [...prev, { file, type: 'image' }]);
         const preview = URL.createObjectURL(file);
         setMediaPreviews(prev => [...prev, { url: preview, type: 'image' }]);
       } else if (file.type.startsWith('video/')) {
-        // Handle video file
         const video = document.createElement('video');
         video.preload = 'metadata';
         video.onloadedmetadata = function() {
@@ -133,83 +126,59 @@ const PostCreate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submission started");
     setLoading(true);
     setError('');
 
     try {
-      // Create a FormData object
       const formDataToSend = new FormData();
-      
-      // Add required fields
       formDataToSend.append('title', formData.title);
       formDataToSend.append('description', formData.description);
-      
-      // Add optional fields if they exist
+
       if (formData.content) {
         formDataToSend.append('content', formData.content);
       }
-      
-      // Add ingredients and instructions as arrays
+
       if (formData.ingredients && formData.ingredients.length > 0) {
-        // Filter out empty ingredients
         const validIngredients = formData.ingredients.filter(ingredient => ingredient.trim() !== '');
         validIngredients.forEach(ingredient => {
           formDataToSend.append('ingredients', ingredient);
         });
       }
-      
+
       if (formData.instructions && formData.instructions.length > 0) {
-        // Filter out empty instructions
         const validInstructions = formData.instructions.filter(instruction => instruction.trim() !== '');
         validInstructions.forEach(instruction => {
           formDataToSend.append('instructions', instruction);
         });
       }
-      
-      // Add cooking time and servings if they exist
+
       if (formData.cookingTime) {
         formDataToSend.append('cookingTime', formData.cookingTime);
       }
-      
+
       if (formData.servings) {
         formDataToSend.append('servings', formData.servings);
       }
 
-      // Append media files
       if (mediaFiles.length > 0) {
-        mediaFiles.forEach(({ file, type }, index) => {
+        mediaFiles.forEach(({ file }, index) => {
           formDataToSend.append('media', file);
         });
-        
-        // Set media type based on the first file
         const firstFileType = mediaFiles[0].type;
         formDataToSend.append('mediaType', firstFileType);
       }
 
-      console.log("Sending API request...");
-      
-      // Make the API call
       const response = await axios.post('/api/posts', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
-      console.log("API response received:", response);
-      
-      // If successful, show a success message and redirect
       if (response.status === 200 || response.status === 201) {
-        console.log("Post created successfully, redirecting...");
-        
-        // Show a success message
         alert("Post created successfully! Redirecting to posts page...");
-        
-        // Navigate to posts page
         window.location.href = '/posts';
       }
     } catch (err) {
-      console.error("Error creating post:", err);
       setError(err.response?.data?.message || 'Failed to create post');
     } finally {
       setLoading(false);
@@ -217,14 +186,40 @@ const PostCreate = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)', minHeight: '100vh', py: 6 }}>
+    <Box
+      sx={{
+        bgcolor: COLOR_BEIGE,
+        minHeight: '100vh',
+        py: 6,
+        display: 'flex',
+        alignItems: 'center',
+      }}
+    >
       <Container maxWidth="sm">
-        <Card elevation={4} sx={{ borderRadius: 4, p: 3, boxShadow: 6 }}>
+        <Card
+          elevation={6}
+          sx={{
+            borderRadius: 4,
+            p: 3,
+            boxShadow: `0 8px 32px 0 ${COLOR_PURPLE}22`,
+            background: '#fff',
+            border: `2px solid ${COLOR_PURPLE}`,
+          }}
+        >
           <CardContent>
-            <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', mb: 2, textAlign: 'center' }}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 800,
+                color: COLOR_PURPLE,
+                mb: 2,
+                textAlign: 'center',
+                letterSpacing: 1,
+              }}
+            >
               Create a New Recipe
             </Typography>
-            <Divider sx={{ mb: 3 }} />
+            <Divider sx={{ mb: 3, borderColor: COLOR_BEIGE, borderBottomWidth: 3 }} />
             <form onSubmit={handleSubmit}>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
@@ -236,6 +231,7 @@ const PostCreate = () => {
                     fullWidth
                     required
                     variant="outlined"
+                    InputLabelProps={{ style: { color: COLOR_PURPLE } }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -249,6 +245,7 @@ const PostCreate = () => {
                     multiline
                     minRows={2}
                     variant="outlined"
+                    InputLabelProps={{ style: { color: COLOR_PURPLE } }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -261,15 +258,27 @@ const PostCreate = () => {
                     multiline
                     minRows={3}
                     variant="outlined"
+                    InputLabelProps={{ style: { color: COLOR_PURPLE } }}
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography variant="h6" sx={{ mb: 1 }}>Media (Images/Videos)</Typography>
+                  <Typography variant="h6" sx={{ mb: 1, color: COLOR_GREEN }}>
+                    Media (Images/Videos)
+                  </Typography>
                   <Button
                     variant="outlined"
                     component="label"
                     startIcon={<CloudUploadIcon />}
-                    sx={{ mb: 1 }}
+                    sx={{
+                      mb: 1,
+                      color: COLOR_PURPLE,
+                      borderColor: COLOR_PURPLE,
+                      '&:hover': {
+                        borderColor: COLOR_GREEN,
+                        color: COLOR_GREEN,
+                        background: COLOR_BEIGE,
+                      },
+                    }}
                   >
                     Upload Media
                     <input
@@ -285,11 +294,41 @@ const PostCreate = () => {
                     {mediaPreviews.map((media, idx) => (
                       <Box key={idx} sx={{ position: 'relative' }}>
                         {media.type === 'image' ? (
-                          <img src={media.url} alt="preview" style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8, border: '1px solid #eee' }} />
+                          <img
+                            src={media.url}
+                            alt="preview"
+                            style={{
+                              width: 80,
+                              height: 80,
+                              objectFit: 'cover',
+                              borderRadius: 8,
+                              border: `2px solid ${COLOR_BEIGE}`,
+                            }}
+                          />
                         ) : (
-                          <video src={media.url} style={{ width: 80, height: 80, borderRadius: 8, border: '1px solid #eee' }} controls />
+                          <video
+                            src={media.url}
+                            style={{
+                              width: 80,
+                              height: 80,
+                              borderRadius: 8,
+                              border: `2px solid ${COLOR_BEIGE}`,
+                            }}
+                            controls
+                          />
                         )}
-                        <IconButton size="small" sx={{ position: 'absolute', top: 0, right: 0, bgcolor: 'white' }} onClick={() => handleRemoveMedia(idx)}>
+                        <IconButton
+                          size="small"
+                          sx={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            bgcolor: COLOR_BEIGE,
+                            color: COLOR_PURPLE,
+                            '&:hover': { bgcolor: COLOR_GREEN, color: '#fff' },
+                          }}
+                          onClick={() => handleRemoveMedia(idx)}
+                        >
                           <DeleteIcon fontSize="small" />
                         </IconButton>
                       </Box>
@@ -305,6 +344,7 @@ const PostCreate = () => {
                     type="number"
                     fullWidth
                     variant="outlined"
+                    InputLabelProps={{ style: { color: COLOR_PURPLE } }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -316,10 +356,13 @@ const PostCreate = () => {
                     type="number"
                     fullWidth
                     variant="outlined"
+                    InputLabelProps={{ style: { color: COLOR_PURPLE } }}
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography variant="h6" sx={{ mb: 1 }}>Ingredients</Typography>
+                  <Typography variant="h6" sx={{ mb: 1, color: COLOR_GREEN }}>
+                    Ingredients
+                  </Typography>
                   <List>
                     {formData.ingredients.map((ingredient, idx) => (
                       <ListItem key={idx} sx={{ pl: 0 }}>
@@ -328,19 +371,45 @@ const PostCreate = () => {
                           value={ingredient}
                           onChange={e => handleArrayInputChange(idx, e.target.value, 'ingredients')}
                           sx={{ mr: 2 }}
+                          InputLabelProps={{ style: { color: COLOR_PURPLE } }}
                         />
-                        <IconButton onClick={() => removeArrayItem(idx, 'ingredients')} disabled={formData.ingredients.length === 1}>
+                        <IconButton
+                          onClick={() => removeArrayItem(idx, 'ingredients')}
+                          disabled={formData.ingredients.length === 1}
+                          sx={{
+                            color: COLOR_PURPLE,
+                            '&:hover': { color: COLOR_GREEN },
+                          }}
+                        >
                           <DeleteIcon />
                         </IconButton>
                       </ListItem>
                     ))}
                   </List>
-                  <Button startIcon={<AddIcon />} onClick={() => addArrayItem('ingredients')} sx={{ mt: 1 }}>
+                  <Button
+                    startIcon={<AddIcon />}
+                    onClick={() => addArrayItem('ingredients')}
+                    sx={{
+                      mt: 1,
+                      color: COLOR_GREEN,
+                      borderColor: COLOR_GREEN,
+                      borderWidth: 2,
+                      borderStyle: 'solid',
+                      background: COLOR_BEIGE,
+                      '&:hover': {
+                        background: COLOR_GREEN,
+                        color: COLOR_BEIGE,
+                        borderColor: COLOR_PURPLE,
+                      },
+                    }}
+                  >
                     Add Ingredient
                   </Button>
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography variant="h6" sx={{ mb: 1 }}>Amounts (optional)</Typography>
+                  <Typography variant="h6" sx={{ mb: 1, color: COLOR_GREEN }}>
+                    Amounts (optional)
+                  </Typography>
                   <List>
                     {formData.amounts.map((amount, idx) => (
                       <ListItem key={idx} sx={{ pl: 0 }}>
@@ -349,19 +418,45 @@ const PostCreate = () => {
                           value={amount}
                           onChange={e => handleArrayInputChange(idx, e.target.value, 'amounts')}
                           sx={{ mr: 2 }}
+                          InputLabelProps={{ style: { color: COLOR_PURPLE } }}
                         />
-                        <IconButton onClick={() => removeArrayItem(idx, 'amounts')} disabled={formData.amounts.length === 1}>
+                        <IconButton
+                          onClick={() => removeArrayItem(idx, 'amounts')}
+                          disabled={formData.amounts.length === 1}
+                          sx={{
+                            color: COLOR_PURPLE,
+                            '&:hover': { color: COLOR_GREEN },
+                          }}
+                        >
                           <DeleteIcon />
                         </IconButton>
                       </ListItem>
                     ))}
                   </List>
-                  <Button startIcon={<AddIcon />} onClick={() => addArrayItem('amounts')} sx={{ mt: 1 }}>
+                  <Button
+                    startIcon={<AddIcon />}
+                    onClick={() => addArrayItem('amounts')}
+                    sx={{
+                      mt: 1,
+                      color: COLOR_GREEN,
+                      borderColor: COLOR_GREEN,
+                      borderWidth: 2,
+                      borderStyle: 'solid',
+                      background: COLOR_BEIGE,
+                      '&:hover': {
+                        background: COLOR_GREEN,
+                        color: COLOR_BEIGE,
+                        borderColor: COLOR_PURPLE,
+                      },
+                    }}
+                  >
                     Add Amount
                   </Button>
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography variant="h6" sx={{ mb: 1 }}>Cooking Steps</Typography>
+                  <Typography variant="h6" sx={{ mb: 1, color: COLOR_GREEN }}>
+                    Cooking Steps
+                  </Typography>
                   <List>
                     {formData.instructions.map((step, idx) => (
                       <ListItem key={idx} sx={{ pl: 0 }}>
@@ -370,14 +465,38 @@ const PostCreate = () => {
                           value={step}
                           onChange={e => handleArrayInputChange(idx, e.target.value, 'instructions')}
                           sx={{ mr: 2 }}
+                          InputLabelProps={{ style: { color: COLOR_PURPLE } }}
                         />
-                        <IconButton onClick={() => removeArrayItem(idx, 'instructions')} disabled={formData.instructions.length === 1}>
+                        <IconButton
+                          onClick={() => removeArrayItem(idx, 'instructions')}
+                          disabled={formData.instructions.length === 1}
+                          sx={{
+                            color: COLOR_PURPLE,
+                            '&:hover': { color: COLOR_GREEN },
+                          }}
+                        >
                           <DeleteIcon />
                         </IconButton>
                       </ListItem>
                     ))}
                   </List>
-                  <Button startIcon={<AddIcon />} onClick={() => addArrayItem('instructions')} sx={{ mt: 1 }}>
+                  <Button
+                    startIcon={<AddIcon />}
+                    onClick={() => addArrayItem('instructions')}
+                    sx={{
+                      mt: 1,
+                      color: COLOR_GREEN,
+                      borderColor: COLOR_GREEN,
+                      borderWidth: 2,
+                      borderStyle: 'solid',
+                      background: COLOR_BEIGE,
+                      '&:hover': {
+                        background: COLOR_GREEN,
+                        color: COLOR_BEIGE,
+                        borderColor: COLOR_PURPLE,
+                      },
+                    }}
+                  >
                     Add Cooking Step
                   </Button>
                 </Grid>
@@ -390,12 +509,22 @@ const PostCreate = () => {
                   <Button
                     type="submit"
                     variant="contained"
-                    color="primary"
                     fullWidth
                     size="large"
                     disabled={loading}
-                    sx={{ mt: 2, fontWeight: 700, fontSize: 18, py: 1.5 }}
-                    startIcon={loading ? <CircularProgress size={24} /> : null}
+                    sx={{
+                      mt: 2,
+                      fontWeight: 700,
+                      fontSize: 18,
+                      py: 1.5,
+                      background: COLOR_PURPLE,
+                      color: COLOR_BEIGE,
+                      '&:hover': {
+                        background: COLOR_GREEN,
+                        color: COLOR_BEIGE,
+                      },
+                    }}
+                    startIcon={loading ? <CircularProgress size={24} sx={{ color: COLOR_BEIGE }} /> : null}
                   >
                     {loading ? 'Posting...' : 'Create Recipe'}
                   </Button>
@@ -409,4 +538,4 @@ const PostCreate = () => {
   );
 };
 
-export default PostCreate; 
+export default PostCreate;

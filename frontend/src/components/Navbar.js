@@ -92,7 +92,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to={user ? "/dashboard" : "/"} className="navbar-logo">
             <RestaurantIcon />
-            <span>CookSphere</span>
+            <span>CookGram</span>
           </Link>
 
           {/* Navigation */}
