@@ -1,5 +1,6 @@
 package com.skillsync.cooking_edition.controller;
 
+
 import com.skillsync.cooking_edition.model.CommunityChatMessage;
 import com.skillsync.cooking_edition.repository.CommunityChatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+
 @RestController
 @RequestMapping("/api/community-chat")
 public class CommunityChatController {
@@ -25,6 +27,7 @@ public class CommunityChatController {
         List<CommunityChatMessage> messages = chatRepository.findAllByOrderByCreatedAtAsc();
         return ResponseEntity.ok(messages);
     }
+
 
     @PostMapping
     public ResponseEntity<?> postMessage(@RequestParam String message) {
@@ -48,6 +51,7 @@ public class CommunityChatController {
         return ResponseEntity.status(401).body("Unauthorized");
     }
 
+    
     @PutMapping("/{id}")
     public ResponseEntity<?> editMessage(@PathVariable String id, @RequestBody Map<String, String> body) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -80,4 +84,5 @@ public class CommunityChatController {
         chatRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
+
 } 
