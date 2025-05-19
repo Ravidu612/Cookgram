@@ -11,7 +11,7 @@ import {
   Restaurant as RestaurantIcon,
   Google as GoogleIcon,
   ChatBubbleOutline as ChatIcon,
-  LibraryBooks as LibraryBooksIcon, // Added for Learning Materials
+  LibraryBooks as LibraryBooksIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import './Navbar.css';
@@ -37,12 +37,12 @@ const Navbar = () => {
   useEffect(() => {
     if (user && user.id) {
       fetchUnreadNotificationsCount();
-      const interval = setInterval(fetchUnreadNotificationsCount, 15000); // Poll every 15 seconds
+      const interval = setInterval(fetchUnreadNotificationsCount, 15000);
       return () => clearInterval(interval);
     } else {
       setUnreadNotifications(0);
     }
-  }, [user, location.pathname]); // Re-fetch when location changes
+  }, [user, location.pathname]);
 
   const fetchUnreadNotificationsCount = async () => {
     try {
@@ -74,9 +74,9 @@ const Navbar = () => {
     { icon: <ExploreIcon />, label: 'Community', path: '/community' },
     { icon: <AddIcon />, label: 'Create Post', path: '/posts/create' },
     { icon: <LibraryBooksIcon />, label: 'Learning Materials', path: '/learning-materials' },
-    { 
-      icon: <NotificationsIcon />, 
-      label: 'Notifications', 
+    {
+      icon: <NotificationsIcon />,
+      label: 'Notifications',
       path: '/notifications',
       badge: unreadNotifications > 0 ? unreadNotifications : null
     },
@@ -86,16 +86,22 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="navbar">
+    <nav className="navbar" style={{ background: '#e9cba7' /* light brown */ }}>
       <div className="navbar-container">
         <div className="navbar-content">
-          {/* Logo */}
-          <Link to={user ? "/dashboard" : "/"} className="navbar-logo">
-            <RestaurantIcon />
-            <span>CookGram</span>
-          </Link>
+                <Link to={user ? "/dashboard" : "/"} className="navbar-logo">
+                <RestaurantIcon />
+                <span style={{ 
+                  background: 'linear-gradient(90deg, #27ae60 0%, #e74c3c 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  fontWeight: 'bold'
+                }}>
+                  CookGram
+                </span>
+                </Link>
 
-          {/* Navigation */}
+                {/* Navigation */}
           <div className="navbar-nav">
             {user ? (
               <>
@@ -144,7 +150,7 @@ const Navbar = () => {
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="menu" style={{ top: '64px', left: '0', right: '0' }}>
+            <div className="menu" style={{ top: '64px', left: '0', right: '0', background: '#e9cba7' }}>
               {navItems.map((item) => (
                 <Link
                   key={item.label}
@@ -162,7 +168,7 @@ const Navbar = () => {
 
           {/* User Menu */}
           {userMenuOpen && (
-            <div className="menu" style={{ top: '64px', right: '20px' }}>
+            <div className="menu" style={{ top: '64px', right: '20px', background: '#e9cba7' }}>
               <Link
                 to="/profile"
                 className={`menu-item ${isActive('/profile') ? 'active' : ''}`}
